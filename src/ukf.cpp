@@ -103,7 +103,7 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
 	if (!is_initialized_) {
 		// first measurement
 		x_ << 0, 0, 0, 0, 0; // not useful
-
+		cout << "initializing data..." << endl;
 		if (meas_package.sensor_type_ == MeasurementPackage::RADAR) {
 			//			Convert radar from polar to cartesian coordinates and initialize state.
 			cout << "First sample: Radar" << endl;
