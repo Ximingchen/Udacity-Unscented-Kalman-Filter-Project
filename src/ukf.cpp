@@ -59,6 +59,8 @@ UKF::UKF() {
   n_aug_ = 7; // dimension of the augmented state
 
   n_z_ = 3; // dimension of the measurement in radar.
+
+//* Sigma point spreading parameter
   lambda_ = 3 - n_aug_;
 
   R_radar = MatrixXd(n_z_, n_z_);
@@ -72,20 +74,18 @@ UKF::UKF() {
 			0, std_laspy_*std_laspy_;
 
 
-  ///* state vector: [pos1 pos2 vel_abs yaw_angle yaw_rate] in SI units and rad
-  //VectorXd x_;
+  // state vector: [pos1 pos2 vel_abs yaw_angle yaw_rate] in SI units and rad
+  Xsig_pred_ = MatrixXd(n_x_, 2 * n_aug_ + 1);
 
-  ///* state covariance matrix
- // MatrixXd P_;
+  //create vector for weights
+  weights_ = VectorXd(2 * n_aug_ + 1);
 
-  ///* predicted sigma points matrix
-  //MatrixXd Xsig_pred_;
+  // Normalized innovation squared (NIS) for radar
+  NIS_radar = 0.0;
 
-  ///* Weights of sigma points
-  //VectorXd weights_;
-
-  ///* Sigma point spreading parameter
-  //double lambda_;
+  // the current NIS for lidar
+  NIS_lidar = 0.0;
+  
 }
 
 UKF::~UKF() {}
@@ -332,6 +332,10 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
 	MatrixXd K = Tc * S.inverse();
 	//residual
 	VectorXd z_diff = z - z_pred;
+
+	// calculate NIS
+
+	NIS_lidar = z_diff.transpose() * S.inverse() * z_diff;
 	//update state mean and covariance matrix
 	x_ = x_ + K * z_diff;
 	P_ = P_ - K * S*K.transpose();
@@ -398,6 +402,8 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
 
 	//add measurement noise covariance matrix
 	S = S + R_radar;
+
+	
 	// **************************************************************	STEP 2 ****************************************************************
 	// step 2: update state, note: measurement dimension, radar can measure r, phi, and r_dot, thus, n_z_ = 3
 
@@ -434,6 +440,7 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
 	while (z_diff(1)> M_PI) z_diff(1) -= 2.*M_PI;
 	while (z_diff(1)<-M_PI) z_diff(1) += 2.*M_PI;
 
+	NIS_radar = z_diff.transpose() * S.inverse() * z_diff;
 	//update state mean and covariance matrix
 	x_ = x_ + K * z_diff;
 	P_ = P_ - K * S*K.transpose();

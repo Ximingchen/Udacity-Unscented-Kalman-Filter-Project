@@ -76,6 +76,10 @@ public:
   /// measurement noise in lidar
   MatrixXd R_lidar;
 
+  double NIS_radar;
+
+  double NIS_lidar;
+
   /**
    * Constructor
    */
