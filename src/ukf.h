@@ -105,6 +105,8 @@ public:
 
 
   void GenerateSigmaPoints(MatrixXd& Xsig_aug, VectorXd & x_aug, MatrixXd& P_aug);
+
+
 };
 
 #endif /* UKF_H */
