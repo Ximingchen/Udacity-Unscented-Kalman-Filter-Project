@@ -67,6 +67,11 @@ public:
   ///* Sigma point spreading parameter
   double lambda_;
 
+  /// measurement dimension
+  int n_z_;
+  /// measurement noise in radar 
+  MatrixXd R; 
+
 
   /**
    * Constructor
