@@ -69,9 +69,12 @@ public:
 
   /// measurement dimension
   int n_z_;
-  /// measurement noise in radar 
-  MatrixXd R; 
 
+  /// measurement noise in radar 
+  MatrixXd R_radar;
+
+  /// measurement noise in lidar
+  MatrixXd R_lidar;
 
   /**
    * Constructor
