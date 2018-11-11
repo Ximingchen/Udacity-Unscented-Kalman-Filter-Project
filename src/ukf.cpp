@@ -440,7 +440,7 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
 		// state difference
 		VectorXd x_diff = Xsig_pred_.col(i) - x_;
 		//angle normalization
-		x_diff(3) = fmod(z_diff(3), M_PI);
+		x_diff(3) = fmod(x_diff(3), M_PI);
 		//while (x_diff(3)> M_PI) x_diff(3) -= 2.*M_PI;
 		//while (x_diff(3)<-M_PI) x_diff(3) += 2.*M_PI;
 
