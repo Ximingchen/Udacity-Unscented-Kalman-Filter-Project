@@ -125,7 +125,6 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
 		}
 		time_us_ = meas_package.timestamp_;// update the time-stamp done initializing, no need to predict or update
 		is_initialized_ = true;
-		cout << "initialization finished" << endl;
 		return;
 	}
 	
@@ -184,11 +183,11 @@ void UKF::Prediction(double delta_t) {
 
 	//create sigma point matrix
 	MatrixXd Xsig_aug = MatrixXd(n_aug_, 2 * n_aug_ + 1);
-
+	
 	// ***********************************************************	STEP 1 *************************************************************
 	// Step 1: generate sigma points
 	GenerateSigmaPoints(Xsig_aug, x_aug, P_aug);
-
+	cout << "sigma points generated " << endl;
 	// ***********************************************************	STEP 2 *************************************************************
 	// Step 2: predict sigma points
 	for (int i = 0; i< 2 * n_aug_ + 1; i++)
@@ -234,6 +233,8 @@ void UKF::Prediction(double delta_t) {
 		Xsig_pred_(3, i) = yaw_p;
 		Xsig_pred_(4, i) = yawd_p;
 	}
+
+	cout << "sigma points predicted " << endl;
 	// ***********************************************************	STEP 3 *************************************************************
 	// Step 3: predict mean and covariance
 	// set weights
@@ -260,6 +261,7 @@ void UKF::Prediction(double delta_t) {
 		while (x_diff(3)<-M_PI) x_diff(3) += 2.*M_PI;
 		P_ = P_ + weights_(i) * x_diff * x_diff.transpose();
 	}
+	cout << "state mean and state cova matrix calculated" << endl;
 }
 
 void UKF::GenerateSigmaPoints(MatrixXd& Xsig_aug, VectorXd & x_aug, MatrixXd& P_aug) {
