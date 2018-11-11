@@ -103,7 +103,7 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
 	if (!is_initialized_) {
 		// first measurement
 		x_ << 0, 0, 0, 0, 0; // not useful
-		cout << "initializing data..." << endl;
+		//cout << "initializing data..." << endl;
 		if (meas_package.sensor_type_ == MeasurementPackage::RADAR) {
 			//			Convert radar from polar to cartesian coordinates and initialize state.
 			float rho = meas_package.raw_measurements_[0];
@@ -116,36 +116,36 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
 			float vy = rho_dot * sin(phi);
 			float v = sqrt(vx * vx + vy * vy);
 			
-			x_ << px, py, v, 0, 0;
+			x_ << px, py, v, 0.0, 0.0;
 		}
 		else if (meas_package.sensor_type_ == MeasurementPackage::LASER) {
-			x_ << meas_package.raw_measurements_[0], meas_package.raw_measurements_[1], 0.0, 0.0;
+			x_ << meas_package.raw_measurements_[0], meas_package.raw_measurements_[1], 0.0, 0.0, 0.0;
 		}
 		time_us_ = meas_package.timestamp_;// update the time-stamp done initializing, no need to predict or update
 		is_initialized_ = true;
-		cout << "initialization finished" << endl;
+		//cout << "initialization finished" << endl;
 		return;
 	}
 	
 	// initialized already
-	cout << "running instance ..." << endl;
+	//cout << "running instance ..." << endl;
 	float dt = (meas_package.timestamp_ - time_us_) / 1000000.0;	//dt - expressed in seconds
 	time_us_ = meas_package.timestamp_; // updated time-stamp
 	
 	Prediction(dt);
-	cout << "Prediction finished..." << endl;
+	//cout << "Prediction finished..." << endl;
 	// measurement update
 	if (meas_package.sensor_type_ == MeasurementPackage::RADAR && use_radar_) {
 		// Radar updates
-		cout << "measurement type: radar" << endl;
+		//cout << "measurement type: radar" << endl;
 		UpdateRadar(meas_package);
 	}
 	if(meas_package.sensor_type_ == MeasurementPackage::LASER && use_laser_){
 		//lidar update
-		cout << "measurement type: laser" << endl;
+		//cout << "measurement type: laser" << endl;
 		UpdateLidar(meas_package);
 	}
-	cout << "state updated" << endl;
+	//cout << "state updated" << endl;
 	// print the output
 	cout << "x_ = " << x_ << endl;
 	cout << "P_ = " << P_ << endl;
