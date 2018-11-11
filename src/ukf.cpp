@@ -106,6 +106,7 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
 		cout << "initializing data..." << endl;
 		if (meas_package.sensor_type_ == MeasurementPackage::RADAR) {
 			//			Convert radar from polar to cartesian coordinates and initialize state.
+			cout << "first data from RADAR " << endl;
 			float rho = meas_package.raw_measurements_[0];
 			float phi = meas_package.raw_measurements_[1];
 			float px = rho * cos(phi);
@@ -119,6 +120,7 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
 			x_ << px, py, v, 0.0, 0.0;
 		}
 		else if (meas_package.sensor_type_ == MeasurementPackage::LASER) {
+			cout << "first data from LIDAR " << endl;
 			x_ << meas_package.raw_measurements_[0], meas_package.raw_measurements_[1], 0.0, 0.0, 0.0;
 		}
 		time_us_ = meas_package.timestamp_;// update the time-stamp done initializing, no need to predict or update
