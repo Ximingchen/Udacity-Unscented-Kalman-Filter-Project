@@ -99,7 +99,7 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
 			float phi = meas_package.raw_measurements_[1];
 			float px = rho * cos(phi);
 			float py = rho * sin(phi);
-
+			
 			float rho_dot = meas_package.raw_measurements_[2];
 			float vx = rho_dot * cos(phi);
 			float vy = rho_dot * sin(phi);
@@ -107,7 +107,7 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
 			
 			x_ << px, py, v, 0, 0;
 		}
-		else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
+		else if (meas_package.sensor_type_ == MeasurementPackage::LASER) {
 			x_ << meas_package.raw_measurements_[0], meas_package.raw_measurements_[1], 0.0, 0.0;
 		}
 		time_us_ = meas_package.timestamp_;// update the time-stamp done initializing, no need to predict or update
@@ -123,11 +123,11 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
 	// measurement update
 	if (meas_package.sensor_type_ == MeasurementPackage::RADAR && use_radar_) {
 		// Radar updates
-		UpdateRadar(meas_package.raw_measurements_);
+		UpdateRadar(meas_package);
 	}
 	if(meas_package.sensor_type_ == MeasurementPackage::LASER && use_laser_){
 		//lidar update
-		UpdateLidar(meas_package.raw_measurements_);
+		UpdateLidar(meas_package);
 	}
 	// print the output
 	cout << "x_ = " << x_ << endl;
@@ -160,8 +160,8 @@ void UKF::Prediction(double delta_t) {
 	MatrixXd P_aug = MatrixXd(n_aug_, n_aug_);
 	P_aug.fill(0.0);
 	P_aug.topLeftCorner(n_x_, n_x_) = P_;
-	P_aug(n_x_, n_x_) = std_a * std_a;					// process noise standard deviation longitudinal acceleration in m/s^2
-	P_aug(n_x_ + 1, n_x_ + 1) = std_yawdd * std_yawdd;	//Process noise standard deviation yaw acceleration in rad/s^2
+	P_aug(n_x_, n_x_) = std_a_ * std_a_;					// process noise standard deviation longitudinal acceleration in m/s^2
+	P_aug(n_x_ + 1, n_x_ + 1) = std_yawdd_ * std_yawdd_;	//Process noise standard deviation yaw acceleration in rad/s^2
 
 	//create sigma point matrix
 	MatrixXd Xsig_aug = MatrixXd(n_aug_, 2 * n_aug_ + 1);
