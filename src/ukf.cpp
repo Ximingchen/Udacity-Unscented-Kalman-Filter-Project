@@ -152,19 +152,19 @@ void UKF::Prediction(double delta_t) {
 	// 3. predict mean and covariance
 
 	VectorXd x_aug = VectorXd(n_aug_);
-	x_aug.head(n_x) = x_; // the first five entries equal to the state vector x_
-	x_aug(n_x) = 0;
-	x_aug(n_x + 1) = 0;
+	x_aug.head(n_x_) = x_; // the first five entries equal to the state vector x_
+	x_aug(n_x_) = 0;
+	x_aug(n_x_ + 1) = 0;
 
 	//create augmented state covariance
 	MatrixXd P_aug = MatrixXd(n_aug_, n_aug_);
 	P_aug.fill(0.0);
-	P_aug.topLeftCorner(n_x, n_x) = P_;
-	P_aug(n_x, n_x) = std_a * std_a;					// process noise standard deviation longitudinal acceleration in m/s^2
-	P_aug(n_x + 1, n_x + 1) = std_yawdd * std_yawdd;	//Process noise standard deviation yaw acceleration in rad/s^2
+	P_aug.topLeftCorner(n_x_, n_x_) = P_;
+	P_aug(n_x_, n_x_) = std_a * std_a;					// process noise standard deviation longitudinal acceleration in m/s^2
+	P_aug(n_x_ + 1, n_x_ + 1) = std_yawdd * std_yawdd;	//Process noise standard deviation yaw acceleration in rad/s^2
 
 	//create sigma point matrix
-	MatrixXd Xsig_aug = MatrixXd(n_aug, 2 * n_aug + 1);
+	MatrixXd Xsig_aug = MatrixXd(n_aug_, 2 * n_aug_ + 1);
 	// Step 1: generate sigma points
 	GenerateSigmaPoints(Xsig_aug, x_aug, P_aug);
 	
