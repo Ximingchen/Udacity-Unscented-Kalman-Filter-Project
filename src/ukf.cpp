@@ -295,7 +295,7 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
 	// **************************************************************	STEP 1 ****************************************************************
   //set vector for weights
 	//create matrix for sigma points in measurement space
-	MatrixXd Zsig = MatrixXd(n_z_, 2 * n_aug + 1);
+	MatrixXd Zsig = MatrixXd(n_z_, 2 * n_aug_ + 1);
 
 	//transform sigma points into measurement space
 	for (int i = 0; i < 2 * n_aug_ + 1; i++) {  //2n+1 simga points
@@ -331,7 +331,7 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
 		while (z_diff(1)> M_PI) z_diff(1) -= 2.*M_PI;
 		while (z_diff(1)<-M_PI) z_diff(1) += 2.*M_PI;
 
-		S = S + weights(i) * z_diff * z_diff.transpose();
+		S = S + weights_(i) * z_diff * z_diff.transpose();
 	}
 
 	//add measurement noise covariance matrix
