@@ -16,23 +16,41 @@ Matlab scripts that can generate additional data.
 
 ## Basic pipeline of the code - UKF algorithm
 The ukf algorithm consists of two main steps:
+
   I: Prediction (time update in KF)
+  
      1. Generate sigma points 
+     
         * Since x(k+1) = F(x(k), ..) is non-linear, given the current state, we sample a few points from the current assume distribution of the state according to a deterministic algorithm. We assume that the current distribution is normal with mean x and covariance P.
+        
         * The number of generated sigma points is related to the dimension of the state space
+        
         * We also consider augmenting the state space so that the process errors remain independent from each other and are normal
+        
      2. Predict sigma points
+
         * Take each of the sigma points and process them through the dynamical equation
+        
      3. Predict mean and covariance - the predicted mean will be served as the estimated state
+     
         * The new mean and covariance is calculated by the weighted mean and weighted covariance of the processed sigma points in I.2
+        
         * Thus, the mean served as x(k+1|k) in the Kalman Filter.
+        
   II: Update (measurement update KF)
+  
      1. Predict measurement
+     
         * Since z(k+1) = G(x(k+1), ..), to calculate the estimated output of z(k+1), again we have to use the sigma point trick. However, as a number of sigma points have already been generated in I.3, we can just use those. Thus, this step corresponds to I.2 above.
+        
      2. Update state
+     
         * When measurement arrives, the new posterior estimation is calcuated using the Kalman gain:
+        
         K = P(x,z)* P(z,z)^-1;
+        
         x+ = x + K(z - z_pred);
+        
         P = P - K P(z, z) K^T.
 
 ## Project Instructions and Rubric
