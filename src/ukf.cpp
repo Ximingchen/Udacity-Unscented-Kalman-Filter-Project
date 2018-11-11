@@ -317,7 +317,7 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
 	//mean predicted measurement
 	VectorXd z_pred = VectorXd(n_z_);
 	z_pred.fill(0.0);
-	for (int i = 0; i < 2 * n_aug + 1; i++) {
+	for (int i = 0; i < 2 * n_aug_ + 1; i++) {
 		z_pred = z_pred + weights_(i) * Zsig.col(i);
 	}
 
